@@ -1,0 +1,59 @@
+version: '2.2'
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+  
+  ftndb: &pgdb
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ssluzba
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  ftnssluzba: &ssluzba
+    image: aco99/ssluzba
+    environment:
+      DB_HOST: 'ftndb'
+      FACULTY_NAME: 'FTN'
+    ports:
+      - "8081:8081"
+    depends_on:
+      ftndb:
+          condition: service_healthy
+  
+  pmfdb:
+    <<: *pgdb
+  pmfssluzba:
+    <<: *ssluzba
+    environment:
+      DB_HOST: pmfdb
+      FACULTY_NAME: 'PMF'
+    ports:
+      - "8082:8081"
+    depends_on:
+      pmfdb:
+          condition: service_healthy
+
+  pravnidb:
+    <<: *pgdb
+  pravnissluzba:
+    <<: *ssluzba
+    environment:
+      DB_HOST: pravnidb
+      FACULTY_NAME: 'PRAVNI'
+    ports:
+      - "8083:8081"
+    depends_on:
+      pravnidb:
+          condition: service_healthy
+
