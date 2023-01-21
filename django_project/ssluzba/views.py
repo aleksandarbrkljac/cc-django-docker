@@ -5,11 +5,13 @@ from .forms import StudentForm, ProfessorForm
 from .models import Student, Professor
 from django.forms import ModelForm
 from os import environ
-faculty = environ.get("FACULTY_NAME", default='PMF')
+import requests
+faculty_name = environ.get("FACULTY_NAME", default='PMF')
+uns_sluzba_api = environ.get("UNS_API", default="http://localhost:3000/users/")
 
 
 def index(request: HttpRequest) -> HttpResponse:
-    context = {'ssluzba': faculty}
+    context = {'ssluzba': faculty_name}
     return render(request, 'index.html', context)
 
 
@@ -18,7 +20,8 @@ def students(request: HttpRequest) -> HttpResponse:
     return _add_user(request=request,
                      model_form=StudentForm,
                      user_type='Studenti',
-                     users=students)
+                     users=students,
+                     uns_api_endpoint='students')
 
 
 def professors(request: HttpRequest) -> HttpResponse:
@@ -26,12 +29,17 @@ def professors(request: HttpRequest) -> HttpResponse:
     return _add_user(request=request,
                      model_form=ProfessorForm,
                      user_type='Profesori',
-                     users=users)
+                     users=users,
+                     uns_api_endpoint='professors')
 
 
-def _add_user(request: HttpRequest, model_form: ModelForm, user_type: str, users: List) -> HttpResponse:
+def _add_user(request: HttpRequest,
+              model_form: ModelForm,
+              users: List,
+              user_type: str,
+              uns_api_endpoint: str) -> HttpResponse:
     context = {
-        'ssluzba': faculty,
+        'ssluzba': faculty_name,
         'form': model_form,
         'user_type': user_type,
         'users': users
@@ -39,6 +47,15 @@ def _add_user(request: HttpRequest, model_form: ModelForm, user_type: str, users
     if request.method == 'POST':
         form = model_form(request.POST)
         if form.is_valid():
-            # DODATI SLANJE ZAHTIJEVA NA UNS APLIKACIJU
-            form.save()
+            response = requests.post(f'{uns_sluzba_api}{uns_api_endpoint}', json={
+                "jmbg": request.POST['jmbg'],
+                "name": request.POST['first_name'] + ' ' + request.POST['last_name']
+            })
+            response_message = response.content.decode()
+            context['message'] = response_message
+            if response.status_code == 201:
+                form.save()
+        else:
+            context['message'] = "KORISNIK VEC POSTOJI!"
+
     return render(request, 'users_page.html', context)

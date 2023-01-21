@@ -72,7 +72,7 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 
 db_name = os.environ.get('DB_NAME', 'ssluzba')
 db_user = os.environ.get('DB_USER', 'postgres')
-db_password = os.environ.get('DB_PASSWORD', 'admin')
+db_password = os.environ.get('DB_PASSWORD', '123')
 db_port = os.environ.get('DB_PORT', '5432')
 
 DATABASES = {

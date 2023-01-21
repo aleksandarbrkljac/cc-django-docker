@@ -56,4 +56,18 @@ services:
     depends_on:
       pravnidb:
           condition: service_healthy
+  
+  unsdb:
+    <<: *pgdb
+  unssluzba:
+    image: aco99/nodejs_uns
+    restart: always
+    environment:
+      DB_HOST: unsdb
+      DB_PASSWORD: admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      unssluzba:
+          condition: service_healthy
 
