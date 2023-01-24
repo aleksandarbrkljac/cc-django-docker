@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_USER: ${{secrets.DOCKER_USER}}
+      DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker images
+      run: | 
+        docker build django_project/ --file Dockerfile --tag aco99/ssluzba
+        docker build nodejs_app/ --file Dockerfile --tag aco99/nodejs_uns
+    - name: Login and push the Docker images
+      run: | 
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        docker push aco99/ssluzba
+        docker push aco99/nodejs_uns
+
