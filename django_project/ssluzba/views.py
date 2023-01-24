@@ -4,10 +4,10 @@ from django.shortcuts import render
 from .forms import StudentForm, ProfessorForm
 from .models import Student, Professor
 from django.forms import ModelForm
-from os import environ
+from os import getenv
 import requests
-faculty_name = environ.get("FACULTY_NAME", default='PMF')
-uns_sluzba_api = environ.get("UNS_API", default="http://localhost:3000/users/")
+faculty_name = getenv("FACULTY_NAME", default='PMF')
+uns_sluzba_api = getenv("UNS_API", default="http://localhost:3000/users/")
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -44,13 +44,15 @@ def _add_user(request: HttpRequest,
         'user_type': user_type,
         'users': users
     }
+    uns_sluzba_api = getenv("UNS_API", default="http://localhost:3000/users/")
+    print(f'UNS SLUZBA API {uns_sluzba_api}')
     if request.method == 'POST':
         form = model_form(request.POST)
         if form.is_valid():
             response = requests.post(f'{uns_sluzba_api}{uns_api_endpoint}', json={
                 "jmbg": request.POST['jmbg'],
                 "name": request.POST['first_name'] + ' ' + request.POST['last_name']
-            })
+            }, verify=False)
             response_message = response.content.decode()
             context['message'] = response_message
             if response.status_code == 201:

@@ -70,10 +70,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
-db_name = os.environ.get('DB_NAME', 'ssluzba')
-db_user = os.environ.get('DB_USER', 'postgres')
-db_password = os.environ.get('DB_PASSWORD', '123')
-db_port = os.environ.get('DB_PORT', '5432')
+db_name = os.getenv('DB_NAME', 'ssluzba')
+db_user = os.getenv('DB_USER', 'postgres')
+db_password = os.getenv('DB_PASSWORD', 'admin')
+db_port = os.getenv('DB_PORT', '5432')
 
 DATABASES = {
     'default': {

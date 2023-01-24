@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS users (jmbg text, name text, user_type text, PRIMARY KEY (jmbg, user_type));

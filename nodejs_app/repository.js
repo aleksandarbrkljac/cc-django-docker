@@ -16,7 +16,6 @@ const pool = new Pool({
 
 const createProfessor = (request, response) => {
   const user = request.body;
-  console.log("nesto ne stima ovdje");
   createUser(user, "PROFESSOR", response);
 };
 const createStudent = (request, response) => {
@@ -26,7 +25,7 @@ const createStudent = (request, response) => {
 
 function createUser(user, user_type, response) {
   pool.query(
-    "INSERT INTO users (name, jmbg, type) VALUES ($1,$2,$3) RETURNING *",
+    "INSERT INTO users (name, jmbg, user_type) VALUES ($1,$2,$3) RETURNING *",
     [user.name, user.jmbg, user_type],
     (error, result) => {
       if (error) {
