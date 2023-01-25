@@ -11,5 +11,5 @@ COPY . /app
 
 EXPOSE 8000
 RUN chmod +x /app/skripta.sh
-VOLUME [ "/app" ]
+VOLUME [ "/app/uploads" ]
 ENTRYPOINT [ "/app/skripta.sh" ]

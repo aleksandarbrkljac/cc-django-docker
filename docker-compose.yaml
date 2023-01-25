@@ -12,6 +12,8 @@ services:
   ftndb: &pgdb
     image: postgres
     restart: always
+    volumes:
+      - ftndbdata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: ssluzba
@@ -20,6 +22,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   ftnssluzba: &ssluzba
     image: aco99/ssluzba
     environment: &ssluzbaenv
@@ -27,6 +30,8 @@ services:
       DB_PASSWORD: admin
       FACULTY_NAME: FTN
       UNS_API: http://unssluzba:3000/users/
+    volumes:
+      - ftnuploads:/app/uploads/
     ports:
       - "8081:8081"
     depends_on:
@@ -35,6 +40,8 @@ services:
   
   pmfdb:
     <<: *pgdb
+    volumes:
+      - pmfdbdata:/var/lib/postgresql/data
   pmfssluzba:
     <<: *ssluzba
     environment:
@@ -42,7 +49,7 @@ services:
       DB_HOST: pmfdb
       FACULTY_NAME: 'PMF'
     volumes:
-      - ./django_project/:/app
+      - pmfuploads:/app/uploads/
     ports:
       - "8082:8081"
     depends_on:
@@ -51,12 +58,16 @@ services:
 
   pravnidb:
     <<: *pgdb
+    volumes:
+      - pravnidbdata:/var/lib/postgresql/data
   pravnissluzba:
     <<: *ssluzba
     environment:
       <<: *ssluzbaenv
       DB_HOST: pravnidb
       FACULTY_NAME: 'PRAVNI'
+    volumes:
+      - pravniuploads:/app/uploads/
     ports:
       - "8083:8081"
     depends_on:
@@ -67,6 +78,7 @@ services:
     <<: *pgdb
     volumes:
       - D:\Fakultet\MASTER\CC\cc-django-docker\init.sql:/docker-entrypoint-initdb.d/init.sql
+      - unsdbdata:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ssluzba
       POSTGRES_HOST_AUTH_METHOD: trust
@@ -82,3 +94,11 @@ services:
       unsdb:
           condition: service_healthy
 
+volumes:
+  ftndbdata:
+  pmfdbdata:
+  pravnidbdata:
+  ftnuploads:
+  pmfuploads:
+  pravniuploads:
+  unsdbdata:
