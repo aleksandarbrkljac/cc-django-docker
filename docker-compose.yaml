@@ -22,10 +22,10 @@ services:
       retries: 5
   ftnssluzba: &ssluzba
     image: aco99/ssluzba
-    environment:
-      DB_HOST: 'ftndb'
+    environment: &ssluzbaenv
+      DB_HOST: ftndb
       DB_PASSWORD: admin
-      FACULTY_NAME: 'FTN'
+      FACULTY_NAME: FTN
       UNS_API: http://unssluzba:3000/users/
     ports:
       - "8081:8081"
@@ -38,9 +38,11 @@ services:
   pmfssluzba:
     <<: *ssluzba
     environment:
+      <<: *ssluzbaenv
       DB_HOST: pmfdb
       FACULTY_NAME: 'PMF'
-      UNS_API: http://unssluzba:3000/users/
+    volumes:
+      - ./django_project/:/app
     ports:
       - "8082:8081"
     depends_on:
@@ -52,9 +54,9 @@ services:
   pravnissluzba:
     <<: *ssluzba
     environment:
+      <<: *ssluzbaenv
       DB_HOST: pravnidb
       FACULTY_NAME: 'PRAVNI'
-      UNS_API: http://unssluzba:3000/users/
     ports:
       - "8083:8081"
     depends_on:
