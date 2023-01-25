@@ -6,6 +6,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     jmbg = models.CharField(max_length=13, primary_key=True)
+    image = models.ImageField(upload_to='images')
 
     class Meta:
         abstract = True

@@ -10,14 +10,27 @@
   </head>
   <body>
     <h1>{{user_type}} {{ssluzba}}</h1>
-    <form method="POST">
-      {% csrf_token %} {{form}}
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <table>
+        {{form.as_table }}
+      </table>
       <input type="submit" />
     </form>
+
     <p>{{message}}</p>
-    {% for user in users %}
-    <p>{{user}}</p>
-    <br />
-    {% endfor %}
+    <table>
+      {% for user in users %}
+      <tr>
+        <td>
+          <p>{{user}}</p>
+        </td>
+        <td>
+          <a href="/{{user.image}}">Slika</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
   </body>
 </html>

@@ -7,7 +7,6 @@ from django.forms import ModelForm
 from os import getenv
 import requests
 faculty_name = getenv("FACULTY_NAME", default='PMF')
-uns_sluzba_api = getenv("UNS_API", default="http://localhost:3000/users/")
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -47,7 +46,8 @@ def _add_user(request: HttpRequest,
     uns_sluzba_api = getenv("UNS_API", default="http://localhost:3000/users/")
     print(f'UNS SLUZBA API {uns_sluzba_api}')
     if request.method == 'POST':
-        form = model_form(request.POST)
+        form = model_form(request.POST, request.FILES)
+        print(request.POST)
         if form.is_valid():
             response = requests.post(f'{uns_sluzba_api}{uns_api_endpoint}', json={
                 "jmbg": request.POST['jmbg'],

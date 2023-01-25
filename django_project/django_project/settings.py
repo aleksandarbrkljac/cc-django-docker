@@ -70,19 +70,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
-db_name = os.getenv('DB_NAME', 'ssluzba')
-db_user = os.getenv('DB_USER', 'postgres')
-db_password = os.getenv('DB_PASSWORD', 'admin')
-db_port = os.getenv('DB_PORT', '5432')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': db_name,
-        'USER': db_user,
-        'PASSWORD': db_password,
+        'NAME': os.getenv('DB_NAME', 'ssluzba'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', '123'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': db_port,
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -127,3 +122,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_ROOT = BASE_DIR / 'uploads/images/'
+MEDIA_URL = '/images/'

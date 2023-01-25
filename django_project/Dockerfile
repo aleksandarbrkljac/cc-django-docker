@@ -13,5 +13,3 @@ EXPOSE 8000
 RUN chmod +x /app/skripta.sh
 
 ENTRYPOINT [ "/app/skripta.sh" ]
-
-
